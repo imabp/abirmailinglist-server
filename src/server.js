@@ -9,7 +9,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", function (req, res) {
-  res.send("AbirMailingListServer-Status:200");
+  res.send(
+    "AbirMailingListServer-Status:200, Visit: abirpal.netlify.com to subscribe"
+  );
 });
 
 app.post("/", (req, res) => {
