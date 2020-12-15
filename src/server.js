@@ -17,30 +17,25 @@ app.get("/", function (req, res) {
 app.post("/", (req, res) => {
   if (req.body.email) {
     const email = req.body.email;
-    const response = sendEmail(email);
-    res.send(response);
+    sgMail.setApiKey(process.env.SENDGRID);
+    const msg = {
+      to: email,
+      from: "abirmailinglist@gmail.com",
+      subject:
+        "Thank you for having me | Abir Pal, Microsoft Student Ambassador",
+      html: template
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        res.send("Thank you for Subscribing.");
+      })
+      .catch((error) => {
+        res.send("Refresh your browser and try again.");
+      });
   } else {
     res.send("Enter a valid email");
   }
 });
-app.listen(process.env.PORT);
 
-function sendEmail(email) {
-  sgMail.setApiKey(process.env.SENDGRID);
-  const msg = {
-    to: email,
-    from: "abirmailinglist@gmail.com",
-    subject: "Thank you for having me | Abir Pal, Microsoft Student Ambassador",
-    html: template
-  };
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log("Email sent");
-      return 200;
-    })
-    .catch((error) => {
-      console.error(error);
-      return 500;
-    });
-}
+app.listen(process.env.PORT);
