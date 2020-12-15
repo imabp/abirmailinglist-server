@@ -1,7 +1,7 @@
 const template = require("./template");
 const sgMail = require("@sendgrid/mail");
 
-const sendEmail = (email) => {
+function sendEmail(email) {
   sgMail.setApiKey(process.env.SENDGRID);
   const msg = {
     to: email,
@@ -19,5 +19,5 @@ const sendEmail = (email) => {
       console.error(error);
       return 500;
     });
-};
+}
 module.exports = { sendEmail };
