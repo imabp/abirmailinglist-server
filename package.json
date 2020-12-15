@@ -4,7 +4,7 @@
   "description": "server for mail subs",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "node src/server.js"
   },
   "dependencies": {
     "@sendgrid/mail": "7.4.0",
