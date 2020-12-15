@@ -1,6 +1,7 @@
 const express = require("express");
-const sendEmail = require("./index.js");
 const app = express();
+const template = require("./template");
+const sgMail = require("@sendgrid/mail");
 // For parsing application/json
 app.use(express.json());
 
@@ -21,3 +22,23 @@ app.post("/", (req, res) => {
   }
 });
 app.listen(process.env.PORT);
+
+function sendEmail(email) {
+  sgMail.setApiKey(process.env.SENDGRID);
+  const msg = {
+    to: email,
+    from: "abirmailinglist@gmail.com",
+    subject: "Thank you for having me | Abir Pal, Microsoft Student Ambassador",
+    html: template
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+      return 200;
+    })
+    .catch((error) => {
+      console.error(error);
+      return 500;
+    });
+}
