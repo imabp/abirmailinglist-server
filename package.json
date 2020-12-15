@@ -1,8 +1,8 @@
 {
-  "name": "node-http-server",
+  "name": "abirmailinglist",
   "version": "1.0.0",
-  "description": "Node.js example server starter project",
-  "main": "src/index.js",
+  "description": "server for mail subs",
+  "main": "src/server.js",
   "scripts": {
     "start": "nodemon src/server.js"
   },
