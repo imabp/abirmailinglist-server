@@ -16,14 +16,14 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.get("/", function (req, res) {
   res.send(
-    "AbirMailingListServer-Status:200, Visit: abirpal.netlify.com to subscribe"
+    "AbirMailingListServer-Status:200\nVisit: abirpal.netlify.com to subscribe"
   );
 });
 
 app.post("/post", async (req, res) => {
   if (req.body.email) {
     const email = req.body.email;
-    const subscriber = new Subscriber({ name: email });
+    const subscriber = await new Subscriber({ email: email });
     await subscriber.save().then(() => {
       console.log("Email Registered");
       req.body.uploadEmail = true;
