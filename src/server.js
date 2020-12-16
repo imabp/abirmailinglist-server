@@ -14,46 +14,42 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-router.use("/post", function (req, res, next) {
-  if (req.body.email) {
-    const email = req.body.email;
-    const subscriber = new Subscriber({ name: email });
-    subscriber.save().then(() => {
-      console.log("Email Registered");
-      req.body.uploadEmail = true;
-    });
-  }
-  next();
-});
-app.use("/post", router);
-
 app.get("/", function (req, res) {
   res.send(
     "AbirMailingListServer-Status:200, Visit: abirpal.netlify.com to subscribe"
   );
 });
 
-app.post("/post", router, (req, res) => {
-  if (req.body.uploadEmail) {
+app.post("/post", async (req, res) => {
+  if (req.body.email) {
     const email = req.body.email;
-    sgMail.setApiKey(process.env.SENDGRID);
-    const msg = {
-      to: email,
-      from: "abirmailinglist@gmail.com",
-      subject:
-        "Thank you for having me | Abir Pal, Microsoft Student Ambassador",
-      html: template
-    };
-    sgMail
-      .send(msg)
-      .then(() => {
-        res.send("Thank you for Subscribing.");
-      })
-      .catch((error) => {
-        res.send("Refresh your browser and try again.");
-      });
-  } else {
-    res.send("Enter a valid email");
+    const subscriber = new Subscriber({ name: email });
+    await subscriber.save().then(() => {
+      console.log("Email Registered");
+      req.body.uploadEmail = true;
+    });
+
+    if (req.body.uploadEmail) {
+      const email = req.body.email;
+      sgMail.setApiKey(process.env.SENDGRID);
+      const msg = {
+        to: email,
+        from: "abirmailinglist@gmail.com",
+        subject:
+          "Thank you for having me | Abir Pal, Microsoft Student Ambassador",
+        html: template
+      };
+      sgMail
+        .send(msg)
+        .then(() => {
+          res.send("Thank you for Subscribing.");
+        })
+        .catch((error) => {
+          res.send("Refresh your browser and try again.");
+        });
+    } else {
+      res.send("Enter a valid email");
+    }
   }
 });
 
