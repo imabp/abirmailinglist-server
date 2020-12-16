@@ -33,7 +33,7 @@ app.get("/", function (req, res) {
   );
 });
 
-app.post("/post", (req, res) => {
+app.post("/post", router, (req, res) => {
   if (req.body.uploadEmail) {
     const email = req.body.email;
     sgMail.setApiKey(process.env.SENDGRID);
