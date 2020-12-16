@@ -1,12 +1,31 @@
 const express = require("express");
 const app = express();
-const template = require("./template");
+var router = express.Router();
 const sgMail = require("@sendgrid/mail");
+const mongoose = require("mongoose");
+
+const Subscriber = require("./subscriber.model");
+const template = require("./template");
+const uri = process.env.MONGO_URI;
 // For parsing application/json
 app.use(express.json());
 
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+router.use("/post", function (req, res, next) {
+  if (req.body.email) {
+    const email = req.body.email;
+    const subscriber = new Subscriber({ name: email });
+    subscriber.save().then(() => {
+      console.log("Email Registered");
+      req.body.uploadEmail = true;
+    });
+  }
+  next();
+});
+app.use("/post", router);
 
 app.get("/", function (req, res) {
   res.send(
@@ -14,8 +33,8 @@ app.get("/", function (req, res) {
   );
 });
 
-app.post("/", (req, res) => {
-  if (req.body.email) {
+app.post("/post", (req, res) => {
+  if (req.body.uploadEmail) {
     const email = req.body.email;
     sgMail.setApiKey(process.env.SENDGRID);
     const msg = {
